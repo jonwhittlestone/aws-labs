@@ -1,4 +1,4 @@
-# vpc-simple
+# vpc-simple - aws-cli
 
 `aws-cli` commands for creating a simple, non-default VPC from scratch with an IPv4 CIDR block and public and private subnet in the VPC as well as installing a basic node app and removal of the VPC.
 
@@ -8,7 +8,7 @@
 * [Creating a simple Hello World web application - Effective DevOps with AWS](https://learning.oreilly.com/library/view/effective-devops-with/9781789539974/792582d6-cf33-49f5-bd53-2c381cb4a19d.xhtml)
 * [Allocating an Elastic IP](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html#using-instance-addressing-eips-allocating)
 * ```aws ec2 describe-vpcs | grep VpcId```
-* ```aws ec2 reboot-instances --instance-ids i-055e8723e62f01931
+* ```aws ec2 reboot-instances --instance-ids i-055e8723e62f01931```
 
 
 ## creation
@@ -114,11 +114,6 @@ sg-048ee17bc6d49238e
 
 6. Visit in browser
         ![alt text](screenshot.png "helloworld on port 3000")
-
-
-
-
-
 
 ## removal
 
