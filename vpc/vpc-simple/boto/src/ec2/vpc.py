@@ -8,7 +8,21 @@ class VPC:
         self._client.acce
 
     def create_vpc(self):
-        print('Creating a VPC ...')
+        print('- Creating a VPC ...')
         return self._client.create_vpc(
             CidrBlock='10.0.0.0/16'
         )
+    
+    def add_name_tag(self, resource_id, resource_name):
+        return self._client.create_tags(
+            Resources=[resource_id],
+            Tags=[{'Key': 'Name', 'Value': resource_name}])
+
+    def create_internet_gateway(self):
+        print('- Creating an Internet Gateway ...')
+        return self._client.create_internet_gateway()
+
+    def attach_igw_to_vpc(self, igw_id, vpc_id):
+        print('- Attaching Internet Gateway ...')
+        return self._client.attach_internet_gateway(InternetGatewayId=igw_id, 
+                                                    VpcId=vpc_id)

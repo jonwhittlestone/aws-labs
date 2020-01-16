@@ -8,6 +8,5 @@ This repo contains my notes on practical explorations with using AWS services an
 ## Table of Contents
 
 * VPC
-  * VPC and simple node web app from scratch [aws-cli](vpc/vpc-simple/aws-cli/README.md) | [boto](http://www.google.com) | [terraform](http://www.google.com)
+  * VPC and simple node web app from scratch [aws-cli](vpc/vpc-simple/aws-cli/README.md) | [boto](vpc/vpc-simple/boto/README.md) | [terraform](http://www.google.com)
   * Highly Available web app from scratch [boto](http://google.com)
-    * Removal [boto](http://www.google.com)
