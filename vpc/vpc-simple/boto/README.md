@@ -10,4 +10,6 @@
 
 ## To run
 
-    (venv) src $ python main.py
+    (venv) src $ python main.py preparevpc
+    ...
+    
