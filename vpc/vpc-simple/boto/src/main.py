@@ -1,23 +1,88 @@
 import typer
 from ec2.vpc import VPC
+from ec2.ec2 import EC2
 from client_locator import EC2Client
+import time
 
 app = typer.Typer()
 
 @app.command()
-def prepareec2():
+def prepareec2(vpc_id, ami_id, public_subnet_id, private_subnet_id):
     typer.echo(f"Creating EC2 Instance ..")
-    # Create a keypair
+    ec2_client = EC2Client().get_client()
+    ec2 = EC2(ec2_client)
 
+    # Create a keypair
+    key_pair_name = f'simple-vpc--boto-generatedkeypair-{time.time()}'
+    key_pair_resp = ec2.create_key_pair(key_pair_name)
+    typer.echo(f'* Created Key Pair with name {key_pair_name}: ' + str(key_pair_resp))
+    print('')
     # /Create a keypair
+
+    # Create a security group
+    public_sg_name = 'simple-vpc--boto-publicsg'
+    public_sg_description = 'Public security group for public subnet internet access'
+    public_sg_resp = ec2.create_security_group(
+        public_sg_name,
+        public_sg_description,
+        vpc_id)
+    public_sg_id = public_sg_resp.get('GroupId')
+    # /Create a security group
+
+    # Add rule to security group to ALLOW internet IN
+    ec2.add_inbound_rule_to_sg(public_sg_id)
+    print(f'Added public access rule to Security Group: {public_sg_name}')
+    print('')
+    # /Add rule to security group to ALLOW internet IN
+
+    # Prepare ec2 instance before launch with startup script #
+    user_data = """#!/bin/bash
+                yum update -y
+                yum install httpd24 -y
+                service httpd start
+                chkconfig httpd on
+                echo "<html><body><h1>Hello from <b>Boto3</b> using Python!</h1></body></html>" > /var/www/html/index.html"""
+    # /Prepare ec2 instance before launch with startup script #
+
+    # Launch public EC2 instance within public subnet #
+    launch_publicec2_resp = ec2.launch_ec2_instance(ami_id, key_pair_name, 1, 1,
+                            public_sg_id, public_subnet_id, user_data)
+    public_ec2_instance_id = launch_publicec2_resp['Instances'][0]['InstanceId']
+    print(f'👌  SUCCESS 👌 Launched Public EC2 Instance using AMI {ami_id} {public_ec2_instance_id}')
+    print('')
+    # /Launch public EC2 instance within public subnet #
+
+    # Adding another security group for private EC2 instance
+    private_security_group_name = 'simple-vpc--boto-privatesg'
+    private_security_group_description = 'Private Security Group for Private Subnet'
+    private_sg_response = ec2.create_security_group(
+        private_security_group_name, private_security_group_description, vpc_id)
+    private_security_group_id = private_sg_response['GroupId']
+    # /Adding another security group for private EC2 instance
+
+    # Add rule to private security group
+    ec2.add_inbound_rule_to_sg(private_security_group_id)
+    # /Add rule to private security group
+
+    # launch private ec2 #
+    launch_private_ec2resp = ec2.launch_ec2_instance(ami_id, key_pair_name, 1, 1,
+                            private_security_group_id, private_subnet_id,"""""")
+
+    private_ec2_instance_id = launch_private_ec2resp['Instances'][0]['InstanceId']
+    typer.echo(
+        f'👌  SUCCESS 👌  Launched private EC2 Instance using AMI {ami_id} {private_ec2_instance_id}')
+    print('')
+    # launch private ec2 #
+
+
 
 @app.command()
 def preparevpc():
     typer.echo(f"Creating VPC ..")
-
-    # Create a VPC -----------------------
     ec2_client = EC2Client().get_client()
     vpc = VPC(ec2_client)
+
+    # Create a VPC -----------------------
     vpc_response = vpc.create_vpc()
     typer.echo('* VPC created: ' + str(vpc_response))
     vpc_name = 'simple-vpc--boto-vpc'
@@ -77,6 +142,10 @@ def preparevpc():
     vpc.add_name_tag(private_subnet_id, 'simple-vpc--boto-private-subnet')
     vpc.add_name_tag(public_subnet_id, 'simple-vpc--boto-public-subnet')
     # /Add name tag to private subnet
+
+    typer.echo(
+        f'👌  SUCCESS 👌  Created VPC with VPC ID: {vpc_id}. Public Subnet ID: {public_subnet_id}. Private Subnet ID: {private_subnet_id}')
+
 
 
 
