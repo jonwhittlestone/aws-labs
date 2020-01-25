@@ -48,3 +48,9 @@ class EC2:
             SubnetId=subnet_id,
             UserData=user_data
         )
+
+    def terminate_instance(self, instance_id):
+        print('Terminating EC2 Instance ' + instance_id)
+        return self._client.terminate_instances(
+            InstanceIds=[instance_id]
+        )

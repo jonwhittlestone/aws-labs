@@ -8,7 +8,7 @@ app = typer.Typer()
 
 @app.command()
 def prepareec2(vpc_id, ami_id, public_subnet_id, private_subnet_id):
-    typer.echo(f"Creating EC2 Instance ..")
+    typer.echo(f"Preparing EC2 Instance ..")
     ec2_client = EC2Client().get_client()
     ec2 = EC2(ec2_client)
 
@@ -37,14 +37,17 @@ def prepareec2(vpc_id, ami_id, public_subnet_id, private_subnet_id):
 
     # Prepare ec2 instance before launch with startup script #
     user_data = """#!/bin/bash
-                yum update -y
-                yum install httpd24 -y
-                service httpd start
-                chkconfig httpd on
-                echo "<html><body><h1>Hello from <b>Boto3</b> using Python!</h1></body></html>" > /var/www/html/index.html"""
+                sudo yum update -y
+                sudo yum install httpd.x86_64 -y
+                sudo service httpd start
+                sudo chkconfig httpd on
+                sudo touch /var/www/html/index.html
+                sudo chmod 777 /var/www/html/index.html
+                sudo echo "<html><body><h1>Hello from <b>Howapped and Boto3</b> using Python!</h1></body></html>" > /var/www/html/index.html"""
     # /Prepare ec2 instance before launch with startup script #
 
     # Launch public EC2 instance within public subnet #
+    # key_pair_name = 'ManualEC2-vpc-simple'
     launch_publicec2_resp = ec2.launch_ec2_instance(ami_id, key_pair_name, 1, 1,
                             public_sg_id, public_subnet_id, user_data)
     public_ec2_instance_id = launch_publicec2_resp['Instances'][0]['InstanceId']
@@ -147,12 +150,17 @@ def preparevpc():
         f'👌  SUCCESS 👌  Created VPC with VPC ID: {vpc_id}. Public Subnet ID: {public_subnet_id}. Private Subnet ID: {private_subnet_id}')
 
 
+@app.command()
+def terminate_instance(instance_id):
+    ec2_client = EC2Client().get_client()
+    ec2 = EC2(ec2_client)
+    ec2.terminate_instance(instance_id)
 
 
 if __name__ == '__main__':
     """
         [x] Prepare VPC with Boto
-        [ ] Prepare EC2 with Boto
+        [x] Prepare EC2 with Boto
         [ ] Launch fresh AMI and Install docker
         [ ] Pull image and run Dockerfile
     """
