@@ -7,6 +7,10 @@ This repo contains my notes on practical explorations with using AWS services wi
 - Config management with Ansible
 - Immutable infrastructure with Docker + IAC with Terraform 
 
+## Supporting Resources
+
+- Toy Dockerized Flask RESTful API [[github]](https://github.com/jonwhittlestone/flask-rest-api)
+
 
 ## Table of Contents
 

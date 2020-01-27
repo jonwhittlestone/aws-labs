@@ -6,8 +6,10 @@ import time
 
 app = typer.Typer()
 
+MANUAL_KEYPAIR_NAME_FOR_SSH = 'ManualEC2-vpc-simple'
+
 @app.command()
-def prepareec2(vpc_id, ami_id, public_subnet_id, private_subnet_id):
+def prepareec2(vpc_id, ami_id, public_subnet_id, private_subnet_id, generate_keypair = True):
     typer.echo(f"Preparing EC2 Instance ..")
     ec2_client = EC2Client().get_client()
     ec2 = EC2(ec2_client)
@@ -38,20 +40,24 @@ def prepareec2(vpc_id, ami_id, public_subnet_id, private_subnet_id):
     # Prepare ec2 instance before launch with startup script #
     user_data = """#!/bin/bash
                 sudo yum update -y
-                sudo yum install httpd.x86_64 -y
-                sudo service httpd start
-                sudo chkconfig httpd on
-                sudo touch /var/www/html/index.html
-                sudo chmod 777 /var/www/html/index.html
-                sudo echo "<html><body><h1>Hello from <b>Howapped and Boto3</b> using Python!</h1></body></html>" > /var/www/html/index.html"""
+                sudo yum install -y docker git
+                sudo usermod -a -G docker ec2-user
+                useradd dockeradmin
+                sudo service docker start
+                sudo chkconfig docker on
+                sudo git clone https://github.com/jonwhittlestone/flask-rest-api.git /var/www/flask-rest-api
+                sudo docker build -t howapped-products /var/www/flask-rest-api
+                sudo docker run -d -p 80:5000 howapped-products:latest"""
     # /Prepare ec2 instance before launch with startup script #
 
     # Launch public EC2 instance within public subnet #
-    # key_pair_name = 'ManualEC2-vpc-simple'
+    if generate_keypair == 'False':
+        key_pair_name = MANUAL_KEYPAIR_NAME_FOR_SSH
+
     launch_publicec2_resp = ec2.launch_ec2_instance(ami_id, key_pair_name, 1, 1,
                             public_sg_id, public_subnet_id, user_data)
     public_ec2_instance_id = launch_publicec2_resp['Instances'][0]['InstanceId']
-    print(f'👌  SUCCESS 👌 Launched Public EC2 Instance using AMI {ami_id} {public_ec2_instance_id}')
+    print(f'👌  SUCCESS - public instance 👌 Launched Public EC2 Instance using AMI {ami_id} {public_ec2_instance_id}')
     print('')
     # /Launch public EC2 instance within public subnet #
 
@@ -73,9 +79,19 @@ def prepareec2(vpc_id, ami_id, public_subnet_id, private_subnet_id):
 
     private_ec2_instance_id = launch_private_ec2resp['Instances'][0]['InstanceId']
     typer.echo(
-        f'👌  SUCCESS 👌  Launched private EC2 Instance using AMI {ami_id} {private_ec2_instance_id}')
+        f'👌  SUCCESS - private instance 👌  Launched private EC2 Instance using AMI {ami_id} {private_ec2_instance_id}')
     print('')
     # launch private ec2 #
+
+
+    # I need a boto watcher because it takes
+    # a while for a public IP to be ready
+    # if generate_keypair == 'False':
+    #     typer.echo(
+    #         f'🖥  SSH into the public instance when ready:')
+    #     print(f'> ssh -i ~/.ssh/ ssh -i ~/.ssh/ManualEC2-vpc-simple.pem ec2-user@52.56.203.216')
+
+
 
 
 
@@ -150,6 +166,7 @@ def preparevpc():
         f'👌  SUCCESS 👌  Created VPC with VPC ID: {vpc_id}. Public Subnet ID: {public_subnet_id}. Private Subnet ID: {private_subnet_id}')
 
 
+
 @app.command()
 def terminate_instance(instance_id):
     ec2_client = EC2Client().get_client()
@@ -162,6 +179,11 @@ if __name__ == '__main__':
         [x] Prepare VPC with Boto
         [x] Prepare EC2 with Boto
         [ ] Launch fresh AMI and Install docker
+            - https://acloudxpert.com/how-toinstall-docker-on-amazon-linux-ami/
         [ ] Pull image and run Dockerfile
+            - Write Dockerfile: https://nodejs.org/en/docs/guides/nodejs-docker-webapp/
+            - wget the Dockerfile from this repo
+            - build
+            - run
     """
     app()
