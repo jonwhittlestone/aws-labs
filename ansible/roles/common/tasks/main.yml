@@ -1,0 +1,11 @@
+---
+- name: Configure / update yum packages
+  yum:
+    name: '*'
+    state: latest
+    update_cache: yes
+
+- name: Installing pip
+  yum:
+    name: "python-pip"
+    state: installed

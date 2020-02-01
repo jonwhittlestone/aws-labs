@@ -1,0 +1,14 @@
+---
+  - name: 'Cloning Git repo: flask-rest-api'
+    git:
+      repo: https://github.com/jonwhittlestone/flask-rest-api.git
+      dest: /var/www/flask-rest-api
+        
+  - name: build the image
+    become: yes
+    docker_image:
+      name: howapped-products
+      tag: latest
+      build:
+        path: /var/www/flask-rest-api
+      state: present

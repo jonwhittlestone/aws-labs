@@ -1,0 +1,22 @@
+---
+ 
+  - name: Installing docker
+    yum:
+      name: "docker"
+      state: installed
+
+  - name: Assign user docker group
+    user:
+      name: ec2-user
+      group: docker
+
+  - name: Start Docker
+    service:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: Enable Docker for auto start
+    service:
+      name: "docker"
+      enabled: yes

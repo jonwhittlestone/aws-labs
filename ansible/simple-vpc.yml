@@ -1,0 +1,14 @@
+---
+- hosts: "{{ target | default('localhost') }}"
+  become: yes
+
+  vars:
+      pip_install_packages:
+        - name: ansible
+        - name: docker 
+
+  roles:
+    - common
+    - geerlingguy.pip
+    - docker
+    - flask-rest-api
