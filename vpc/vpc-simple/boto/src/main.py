@@ -40,14 +40,9 @@ def prepareec2(vpc_id, ami_id, public_subnet_id, private_subnet_id, generate_key
     # Prepare ec2 instance before launch with startup script #
     user_data = """#!/bin/bash
                 sudo yum update -y
-                sudo yum install -y docker git
-                sudo usermod -a -G docker ec2-user
-                useradd dockeradmin
-                sudo service docker start
-                sudo chkconfig docker on
-                sudo git clone https://github.com/jonwhittlestone/flask-rest-api.git /var/www/flask-rest-api
-                sudo docker build -t howapped-products /var/www/flask-rest-api
-                sudo docker run -d -p 80:5000 howapped-products:latest"""
+                sudo yum install -y git python-pip
+                pip install ansible
+                ansible-pull -U https://github.com/jonwhittlestone/aws-labs ansible/simple-vpc.yml -i localhost --sleep 60"""
     # /Prepare ec2 instance before launch with startup script #
 
     # Launch public EC2 instance within public subnet #

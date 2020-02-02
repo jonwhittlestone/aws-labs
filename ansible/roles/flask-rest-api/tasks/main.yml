@@ -12,3 +12,11 @@
       build:
         path: /var/www/flask-rest-api
       state: present
+
+  - name: Create & run app docker container
+    docker_container:
+      name: "howapped-products-web"
+      image: "howapped-products"
+      ports:
+        - "80:5000"
+      privileged: true
