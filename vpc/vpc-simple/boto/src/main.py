@@ -167,18 +167,28 @@ def terminate_instance(instance_id):
     ec2_client = EC2Client().get_client()
     ec2 = EC2(ec2_client)
     ec2.terminate_instance(instance_id)
+    typer.echo('Deleted Instance.')
+
+
+@app.command()
+def delete_security_group(security_group_id):
+    ec2_client = EC2Client().get_client()
+    ec2 = EC2(ec2_client)
+    ec2_client.delete_security_group(GroupId=security_group_id)
+    typer.echo('Deleted Security group.')
 
 
 if __name__ == '__main__':
     """
         [x] Prepare VPC with Boto
         [x] Prepare EC2 with Boto
-        [ ] Launch fresh AMI and Install docker
+        [x] Launch fresh AMI and Install docker
             - https://acloudxpert.com/how-toinstall-docker-on-amazon-linux-ami/
-        [ ] Pull image and run Dockerfile
+        [x] Pull image and run Dockerfile
             - Write Dockerfile: https://nodejs.org/en/docs/guides/nodejs-docker-webapp/
             - wget the Dockerfile from this repo
             - build
             - run
+        [x] Replace UserData configuration mgmt with `ansbile-pull`
     """
     app()

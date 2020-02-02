@@ -8,6 +8,16 @@
 ![architecture](architecture.png "The eventual output")
 
 
+## Cleanup from previous sessions
+
+After having run this script previously, ensure to remove EC2 instances and security groups in preparation for running the script again.
+
+
+    (venv) src $ python main.py terminate-instance <i-INSTANCE-ID>
+
+
+
+
 ## To run VPC creation
 
     (venv) src $ python main.py preparevpc
