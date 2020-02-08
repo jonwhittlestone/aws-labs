@@ -16,7 +16,7 @@ This repo contains my notes on practical explorations with using AWS services wi
 ## Table of Contents
 
 * VPC
-  * VPC and simple Flask web app from scratch [aws-cli](vpc/vpc-simple/aws-cli/README.md) | [boto](vpc/vpc-simple/boto/README.md) | [terraform](http://www.google.com)
+  * VPC and simple Flask web app from scratch [aws-cli](vpc/vpc-simple/aws-cli/README.md) | [boto](vpc/vpc-simple/boto/README.md) | [terraform](vpc/vpc-simple/terraform/README.md)
 * RDS
   * Simple Flask app persisted to RDS [boto](vpc/vpc-simple/boto/README.md) | [terraform](http://www.google.com)
 * HA
