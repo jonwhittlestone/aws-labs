@@ -2,8 +2,8 @@
 
 ## Resources
 
-- Terraform: Up & Running (2nd Ed.) [[contents]](https://learning.oreilly.com/library/view/terraform-up/9781492046899/#toc) | [[github]](https://github.com/brikis98/terraform-up-and-running-code)
-- neocorp's terraforming a VPC [[reference github]](https://github.com/jonwhittlestone/aws_vpc_ec2)
+- Terraform: Up & Running (2nd Ed.) [contents](https://learning.oreilly.com/library/view/terraform-up/9781492046899/#toc) | [code](https://github.com/brikis98/terraform-up-and-running-code)
+- neocorp's terraforming a VPC [code](https://github.com/jonwhittlestone/aws_vpc_ec2) | [article](https://niyazierdogan.wordpress.com/2019/02/16/implementing-aws-virtual-private-cloud-vpc-infrastructure-with-terraform/)
 
 ## Prerequisites
 - Export your AWS credentials
@@ -35,16 +35,23 @@
 
         $ terraform plan
 
+
 3. Apply the changes
 
         $ terraform apply
 
-4. Get the public IP
+        ...
+        aws_instance.example: Creation complete after 42s [id=i-0a0ec6ea9a414e8b3]
 
-        $ terraform output
+        Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
-        public_ip = 3.10.205.172
+        Outputs:
 
-5. SSH to it using the existing keypair
+        eis_public_ip = 3.11.66.163
+        public_ip = 18.130.225.99
 
-        $ ssh -i ~/.ssh/ManualEC2-vpc-simple.pem 3.10.205.172
+4. Visit Public IP in a browser
+
+5. If you need, SSH to Public IP using the existing keypair
+
+        $ ssh -i ~/.ssh/ManualEC2-vpc-simple.pem 18.130.225.99
