@@ -47,10 +47,14 @@
 
         Outputs:
 
-        eis_public_ip = 3.11.66.163
+        eip_public_ip = 3.11.66.163
         public_ip = 18.130.225.99
 
-4. Visit Public IP in a browser
+4. After a few minutes, visit Public IP in a browser
+
+
+        http://18.130.225.99
+
 
 5. If you need, SSH to Public IP using the existing keypair
 

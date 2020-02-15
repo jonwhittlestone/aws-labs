@@ -23,7 +23,7 @@ output "public_ip" {
   description = "The public IP of the Instance"
 }
 
-output "eis_public_ip" {
-  value       = aws_eip.elastic-ip-for-nat-gw.public_ip
-  description = "The Elastic IP for the NAT Gateway. Visit this in a web browser"
-}
+# output "eis_public_ip" {
+#   value       = aws_eip.elastic-ip-for-nat-gw.public_ip
+#   description = "The Elastic IP for the NAT Gateway. Visit this in a web browser"
+# }

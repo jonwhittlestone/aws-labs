@@ -55,31 +55,31 @@ resource "aws_route_table_association" "private-route-1-association" {
   subnet_id      = aws_subnet.private-subnet-1.id
 }
 
-resource "aws_eip" "elastic-ip-for-nat-gw" {
-  vpc                       = true
-  associate_with_private_ip = "10.0.0.5"
+# resource "aws_eip" "elastic-ip-for-nat-gw" {
+#   vpc                       = true
+#   associate_with_private_ip = "10.0.0.5"
 
-  tags = {
-    Name = "Production-EIP"
-  }
-}
+#   tags = {
+#     Name = "Production-EIP"
+#   }
+# }
 
-resource "aws_nat_gateway" "nat-gw" {
-  allocation_id = aws_eip.elastic-ip-for-nat-gw.id
-  subnet_id     = aws_subnet.public-subnet-1.id
+# resource "aws_nat_gateway" "nat-gw" {
+#   allocation_id = aws_eip.elastic-ip-for-nat-gw.id
+#   subnet_id     = aws_subnet.public-subnet-1.id
 
-  tags = {
-    Name = "Production-NAT-GW"
-  }
+#   tags = {
+#     Name = "Production-NAT-GW"
+#   }
 
-  depends_on = [aws_eip.elastic-ip-for-nat-gw]
-}
+#   depends_on = [aws_eip.elastic-ip-for-nat-gw]
+# }
 
-resource "aws_route" "nat-gw-route" {
-  route_table_id         = aws_route_table.private-route-table.id
-  nat_gateway_id         = aws_nat_gateway.nat-gw.id
-  destination_cidr_block = "0.0.0.0/0"
-}
+# resource "aws_route" "nat-gw-route" {
+#   route_table_id         = aws_route_table.private-route-table.id
+#   nat_gateway_id         = aws_nat_gateway.nat-gw.id
+#   destination_cidr_block = "0.0.0.0/0"
+# }
 
 resource "aws_internet_gateway" "production-igw" {
   vpc_id = aws_vpc.production-vpc.id
