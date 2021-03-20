@@ -6,7 +6,7 @@ cffi==1.13.2
 Click==7.0
 cryptography==2.8
 docutils==0.15.2
-Jinja2==2.11.0
+Jinja2==2.11.3
 jmespath==0.9.4
 MarkupSafe==1.1.1
 pyboto3==1.4.4
